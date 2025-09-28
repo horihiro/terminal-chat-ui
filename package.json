@@ -1,0 +1,39 @@
+{
+  "name": "terminal-chat-app",
+  "version": "1.0.0",
+  "description": "A terminal-based chat application using ink",
+  "main": "dist/lib/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build:test": "tsc -p tsconfig.test.json",
+    "test": "npm run build:test && node --test dist-test/tests/*.test.js",
+    "test:watch": "npm run build:test && node --test --watch dist-test/tests/*.test.js",
+    "demo:echo": "node examples/simple-echo.js",
+    "demo:api": "node examples/api-integration.js",
+    "demo:message-control": "npm run build && node examples/message-control-demo.js",
+    "demo:typescript-control": "npm run build && node dist/examples/typescript-message-control.js",
+    "dev:simple": "node --watch examples/simple-echo.js",
+    "dev:streaming": "node --watch examples/streaming-chat.js",
+    "dev:api": "node --watch examples/api-integration.js",
+    "dev:typescript": "npm run build && node --watch examples/typescript-test.js"
+  },
+  "keywords": [
+    "terminal",
+    "chat",
+    "ink",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ink": "^4.4.1",
+    "react": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.2.0",
+    "esbuild": "^0.19.0",
+    "typescript": "^5.0.0"
+  }
+}

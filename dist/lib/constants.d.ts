@@ -1,0 +1,50 @@
+export declare const TERMINAL_CONSTANTS: {
+    readonly DEFAULT_WIDTH: 80;
+    readonly DEFAULT_HEIGHT: 24;
+    readonly HEADER_HEIGHT: 3;
+    readonly INPUT_HEIGHT: 3;
+    readonly MIN_MESSAGE_AREA_HEIGHT: 5;
+    readonly TOTAL_FIXED_HEIGHT: 10;
+    readonly MESSAGE_PADDING: 4;
+    readonly MESSAGE_HEIGHT_ESTIMATE: 4;
+    readonly MIN_VISIBLE_MESSAGES: 2;
+    readonly MESSAGE_BOX_PADDING: 10;
+    readonly MESSAGE_BOX_WIDTH_RATIO: 0.7;
+    readonly MIN_MESSAGE_BOX_WIDTH: 20;
+    readonly SHORT_TEXT_THRESHOLD: 40;
+    readonly SHORT_MESSAGE_THRESHOLD: 20;
+    readonly MIN_WRAP_WIDTH: 5;
+    readonly SCROLL_AMOUNT_DEFAULT: 1;
+    readonly SCROLL_AMOUNT_PAGE: 3;
+    readonly DEFAULT_STREAM_DELAY: 60;
+    readonly FAST_STREAM_DELAY: 20;
+    readonly SLOW_STREAM_DELAY: 200;
+    readonly PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2;
+};
+export declare const ANSI_CODES: {
+    readonly ALTERNATE_SCREEN_ON: "\u001B[?1049h";
+    readonly ALTERNATE_SCREEN_OFF: "\u001B[?1049l";
+    readonly CLEAR_SCREEN: "\u001B[2J\u001B[H";
+    readonly CURSOR_HIDE: "\u001B[?25l";
+    readonly CURSOR_SHOW: "\u001B[?25h";
+    readonly SCROLL_DISABLE: "\u001B[?7l";
+    readonly SCROLL_ENABLE: "\u001B[?7h";
+};
+export declare const DEFAULT_COLORS: {
+    readonly userMessage: "green";
+    readonly userMessageBorder: "green";
+    readonly botMessage: "blue";
+    readonly botMessageBorder: "blue";
+    readonly timestamp: "gray";
+    readonly header: "blue";
+    readonly inputLabel: "yellow";
+    readonly inputText: "white";
+    readonly inputCursor: "gray";
+    readonly inputPlaceholder: "gray";
+    readonly scrollIndicator: "gray";
+    readonly streamingIndicator: "blue";
+};
+export declare const REGEX_PATTERNS: {
+    readonly JAPANESE_CHARS: RegExp;
+    readonly PUNCTUATION: RegExp;
+};

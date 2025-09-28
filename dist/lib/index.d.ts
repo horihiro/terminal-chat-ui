@@ -1,0 +1,13 @@
+export { default as TerminalChatUI } from './TerminalChatUI.js';
+export { TextUtils, TerminalUtils, MessageUtils, ArrayUtils } from './utils.js';
+export { TERMINAL_CONSTANTS, ANSI_CODES, DEFAULT_COLORS, REGEX_PATTERNS } from './constants.js';
+import { MessageUtils, ArrayUtils } from './utils.js';
+export type { Message, StreamingHelper, StreamingController, MessageController, ChatConfig, ColorScheme, ChatComponentFunction, ChatConfigOrFunction, MessageSendHandler, ExitHandler, TerminalSize, TerminalChatUIProps, MessageListProps, InputBoxProps } from '../types.js';
+export declare const runTerminalChat: (chatConfig: import("../types.js").ChatConfigOrFunction) => Promise<void>;
+export declare const createMessage: typeof MessageUtils.createMessage;
+export declare const addMessageToArray: typeof ArrayUtils.addMessage;
+export declare const generateMessageId: typeof MessageUtils.generateId;
+export declare const updateMessageText: typeof ArrayUtils.updateMessageText;
+export declare const appendToMessage: typeof ArrayUtils.appendToMessage;
+export declare const createStreamingMessage: typeof MessageUtils.createStreamingMessage;
+export declare const completeStreaming: typeof ArrayUtils.completeStreaming;
