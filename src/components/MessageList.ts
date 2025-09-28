@@ -125,11 +125,11 @@ const MessageList: React.FC<MessageListProps> = ({
           }, line)
         )
       ),
-      // Timestamp
+      // Timestamp with user icon
       React.createElement(Text, { 
         color: colorScheme.timestamp,
         dimColor: true
-      }, message.timestamp.toLocaleTimeString())
+      }, TextUtils.formatTimeWithIcon(message.timestamp, true))
     ), [colorScheme]);
 
   // Render bot message
@@ -158,11 +158,11 @@ const MessageList: React.FC<MessageListProps> = ({
           }, "▌")
         )
       ),
-      // Timestamp
+      // Timestamp with bot icon
       React.createElement(Text, { 
         color: colorScheme.timestamp,
         dimColor: true
-      }, message.timestamp.toLocaleTimeString())
+      }, TextUtils.formatTimeWithIcon(message.timestamp, false))
     ), [colorScheme]);
 
   const { visibleMessages, hasMoreAbove, hasMoreBelow } = displayData;

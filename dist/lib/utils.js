@@ -46,13 +46,15 @@ export class TextUtils {
         return lines.length > 0 ? lines : [''];
     }
     /**
-     * Format timestamp consistently
+     * Format timestamp with user/bot icon
      */
-    static formatTime(timestamp) {
-        return timestamp.toLocaleTimeString('ja-JP', {
+    static formatTimeWithIcon(timestamp, isUser) {
+        const timeStr = timestamp.toLocaleTimeString('ja-JP', {
             hour: '2-digit',
             minute: '2-digit'
         });
+        const icon = isUser ? '👤' : '🤖';
+        return `${icon} ${timeStr}`;
     }
 }
 /**

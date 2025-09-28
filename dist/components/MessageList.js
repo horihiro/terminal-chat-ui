@@ -92,11 +92,11 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
         key: lineIndex,
         color: colorScheme.userMessage
     }, line))), 
-    // Timestamp
+    // Timestamp with user icon
     React.createElement(Text, {
         color: colorScheme.timestamp,
         dimColor: true
-    }, message.timestamp.toLocaleTimeString())), [colorScheme]);
+    }, TextUtils.formatTimeWithIcon(message.timestamp, true))), [colorScheme]);
     // Render bot message
     const renderBotMessage = useCallback((message, boxWidth) => React.createElement(Box, {
         flexDirection: "column",
@@ -116,11 +116,11 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
     message.isStreaming && React.createElement(Text, {
         color: colorScheme.streamingIndicator
     }, "▌"))), 
-    // Timestamp
+    // Timestamp with bot icon
     React.createElement(Text, {
         color: colorScheme.timestamp,
         dimColor: true
-    }, message.timestamp.toLocaleTimeString())), [colorScheme]);
+    }, TextUtils.formatTimeWithIcon(message.timestamp, false))), [colorScheme]);
     const { visibleMessages, hasMoreAbove, hasMoreBelow } = displayData;
     return React.createElement(Box, {
         flexDirection: "column",

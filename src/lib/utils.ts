@@ -50,13 +50,15 @@ export class TextUtils {
   }
 
   /**
-   * Format timestamp consistently
+   * Format timestamp with user/bot icon
    */
-  static formatTime(timestamp: Date): string {
-    return timestamp.toLocaleTimeString('ja-JP', { 
+  static formatTimeWithIcon(timestamp: Date, isUser: boolean): string {
+    const timeStr = timestamp.toLocaleTimeString('ja-JP', { 
       hour: '2-digit', 
       minute: '2-digit' 
     });
+    const icon = isUser ? '👤' : '🤖';
+    return `${icon} ${timeStr}`;
   }
 }
 

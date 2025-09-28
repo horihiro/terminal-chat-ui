@@ -12,9 +12,9 @@ export declare class TextUtils {
      */
     static wrapText(text: string, maxWidth: number): string[];
     /**
-     * Format timestamp consistently
+     * Format timestamp with user/bot icon
      */
-    static formatTime(timestamp: Date): string;
+    static formatTimeWithIcon(timestamp: Date, isUser: boolean): string;
 }
 /**
  * Terminal control utilities

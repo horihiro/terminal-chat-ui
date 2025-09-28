@@ -62,40 +62,7 @@ npm run build
 node examples/typescript-message-control.js
 ```
 
-```javascript
-import { runTerminalChat, createMessage } from '../dist/lib/index.js';
 
-const chatConfig = {
-  title: "Simple echo chat",
-  placeholder: "type anything...",
-  initialMessages: [
-    createMessage(1, 'Welcome to Simple echo chat', false),
-  ],
-  
-  onMessageSend: (messageText, helpers) => {
-    // Simple echo response
-    setTimeout(() => {
-      if (messageText.includes('exit') || messageText.includes('quit')) {
-        helpers.addMessage('Good bye！', false);
-        setTimeout(() => process.exit(0), 1000);
-      } else {
-        helpers.addMessage(`echo: ${messageText}`, false);
-      }
-    }, 500);
-  }
-};
-
-// Launch the chat application
-runTerminalChat(chatConfig);
-```
-
-## Development Mode (File Watching)
-
-```bash
-npm run dev:simple      # Simple version development
-npm run dev:streaming   # Streaming version development
-npm run dev:api         # API integration version development
-```
 
 ## Message Control API
 
