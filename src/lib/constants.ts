@@ -46,20 +46,31 @@ export const ANSI_CODES = {
   SCROLL_ENABLE: '\x1b[?7h'
 } as const;
 
-// Default color scheme
+// Default color scheme (optimized for black terminal background)
 export const DEFAULT_COLORS = {
-  userMessage: 'green',
+  // User messages - bright green for good visibility
+  userMessage: 'greenBright',
   userMessageBorder: 'green',
-  botMessage: 'blue',
+  
+  // Bot messages - bright blue for distinction
+  botMessage: 'blueBright', 
   botMessageBorder: 'blue',
-  timestamp: 'gray',
-  header: 'blue',
-  inputLabel: 'yellow',
+  
+  // Timestamp - cyan for subtle accent
+  timestamp: 'cyan',
+  
+  // Header - bright cyan for prominence
+  header: 'cyanBright',
+  
+  // Input area - yellow/white combination for clarity
+  inputLabel: 'yellowBright',
   inputText: 'white',
-  inputCursor: 'gray',
+  inputCursor: 'yellowBright',
   inputPlaceholder: 'gray',
-  scrollIndicator: 'gray',
-  streamingIndicator: 'blue'
+  
+  // UI elements - subtle but visible
+  scrollIndicator: 'magenta',
+  streamingIndicator: 'yellow'
 } as const;
 
 // Regular expressions

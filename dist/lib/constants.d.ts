@@ -31,18 +31,18 @@ export declare const ANSI_CODES: {
     readonly SCROLL_ENABLE: "\u001B[?7h";
 };
 export declare const DEFAULT_COLORS: {
-    readonly userMessage: "green";
+    readonly userMessage: "greenBright";
     readonly userMessageBorder: "green";
-    readonly botMessage: "blue";
+    readonly botMessage: "blueBright";
     readonly botMessageBorder: "blue";
-    readonly timestamp: "gray";
-    readonly header: "blue";
-    readonly inputLabel: "yellow";
+    readonly timestamp: "cyan";
+    readonly header: "cyanBright";
+    readonly inputLabel: "yellowBright";
     readonly inputText: "white";
-    readonly inputCursor: "gray";
+    readonly inputCursor: "yellowBright";
     readonly inputPlaceholder: "gray";
-    readonly scrollIndicator: "gray";
-    readonly streamingIndicator: "blue";
+    readonly scrollIndicator: "magenta";
+    readonly streamingIndicator: "yellow";
 };
 export declare const REGEX_PATTERNS: {
     readonly JAPANESE_CHARS: RegExp;
