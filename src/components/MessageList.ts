@@ -174,7 +174,8 @@ const MessageList: React.FC<MessageListProps> = ({
     // Scroll indicator - above
     hasMoreAbove && React.createElement(Box, { 
       justifyContent: "center", 
-      marginBottom: 1 
+      marginBottom: 1,
+      flexShrink: 0
     },
       React.createElement(Text, { 
         color: colorScheme.scrollIndicator, 
@@ -182,16 +183,20 @@ const MessageList: React.FC<MessageListProps> = ({
       }, "↑ More messages above (Arrow keys, PageUp/PageDown to scroll)")
     ),
     
-    // Messages container
+    // Messages container (with explicit height to prevent overflow)
     React.createElement(Box, { 
       flexDirection: "column",
-      flexGrow: 1 
+      flexGrow: 1,
+      flexShrink: 1,
+      minHeight: 0,
+      overflow: "hidden"
     }, ...visibleMessages.map(renderMessage)),
     
     // Scroll indicator - below
     hasMoreBelow && React.createElement(Box, { 
       justifyContent: "center", 
-      marginTop: 1 
+      marginTop: 1,
+      flexShrink: 0
     },
       React.createElement(Text, { 
         color: colorScheme.scrollIndicator, 
