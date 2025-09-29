@@ -6,7 +6,7 @@ export declare const TERMINAL_CONSTANTS: {
     readonly MIN_MESSAGE_AREA_HEIGHT: 5;
     readonly TOTAL_FIXED_HEIGHT: 10;
     readonly MESSAGE_PADDING: 4;
-    readonly MESSAGE_HEIGHT_ESTIMATE: 4;
+    readonly MESSAGE_HEIGHT_ESTIMATE: 5;
     readonly MIN_VISIBLE_MESSAGES: 2;
     readonly MESSAGE_BOX_PADDING: 10;
     readonly MESSAGE_BOX_WIDTH_RATIO: 0.7;

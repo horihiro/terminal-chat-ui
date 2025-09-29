@@ -8,11 +8,110 @@ import { TERMINAL_CONSTANTS, DEFAULT_COLORS } from '../lib/constants.js';
 const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
     const [scrollOffset, setScrollOffset] = useState(0);
     // Memoized calculations for performance
-    const dimensions = useMemo(() => ({
-        messageBoxMaxWidth: Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
-            TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)),
-        maxVisibleMessages: Math.max(TERMINAL_CONSTANTS.MIN_VISIBLE_MESSAGES, Math.floor((maxHeight - 6) / TERMINAL_CONSTANTS.MESSAGE_HEIGHT_ESTIMATE))
-    }), [maxHeight, terminalWidth]);
+    const dimensions = useMemo(() => {
+        // Calculate actual total height needed for all messages
+        const totalMessageHeight = messages.reduce((totalHeight, message) => {
+            let messageHeight = 0;
+            const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
+                TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
+            if (message.isUser) {
+                // User messages: calculate wrapped lines
+                const textWidth = TextUtils.getTextWidth(message.text);
+                if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
+                    const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
+                    messageHeight = wrappedLines.length + 2; // content lines + borders
+                }
+                else {
+                    messageHeight = 3; // single line + borders
+                }
+            }
+            else {
+                // Bot messages: also calculate based on actual content length
+                const textWidth = TextUtils.getTextWidth(message.text);
+                const lines = message.text.split('\n'); // Handle explicit line breaks
+                if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD || lines.length > 1) {
+                    // Multi-line bot message
+                    let totalLines = 0;
+                    lines.forEach(line => {
+                        if (TextUtils.getTextWidth(line) > maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING) {
+                            const wrappedLines = TextUtils.wrapText(line, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
+                            totalLines += wrappedLines.length;
+                        }
+                        else {
+                            totalLines += 1;
+                        }
+                    });
+                    messageHeight = totalLines + 2; // content lines + borders
+                }
+                else {
+                    messageHeight = 3; // single line + borders
+                }
+            }
+            messageHeight += 1; // timestamp line
+            messageHeight += 1; // margin
+            return totalHeight + messageHeight;
+        }, 0);
+        // Calculate how many messages can actually fit
+        const availableHeight = maxHeight - 4; // Reserve space for scroll indicators
+        let maxVisibleMessages = messages.length;
+        // If total height exceeds available space, calculate how many messages fit
+        if (totalMessageHeight > availableHeight) {
+            let accumulatedHeight = 0;
+            maxVisibleMessages = 0;
+            // Count from the end (latest messages) to see how many fit
+            for (let i = messages.length - 1; i >= 0; i--) {
+                const message = messages[i];
+                let messageHeight = 0;
+                const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
+                    TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
+                if (message.isUser) {
+                    const textWidth = TextUtils.getTextWidth(message.text);
+                    if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
+                        const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
+                        messageHeight = wrappedLines.length + 2;
+                    }
+                    else {
+                        messageHeight = 3;
+                    }
+                }
+                else {
+                    const textWidth = TextUtils.getTextWidth(message.text);
+                    const lines = message.text.split('\n');
+                    if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD || lines.length > 1) {
+                        let totalLines = 0;
+                        lines.forEach(line => {
+                            if (TextUtils.getTextWidth(line) > maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING) {
+                                const wrappedLines = TextUtils.wrapText(line, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
+                                totalLines += wrappedLines.length;
+                            }
+                            else {
+                                totalLines += 1;
+                            }
+                        });
+                        messageHeight = totalLines + 2;
+                    }
+                    else {
+                        messageHeight = 3;
+                    }
+                }
+                messageHeight += 2; // timestamp + margin
+                if (accumulatedHeight + messageHeight <= availableHeight) {
+                    accumulatedHeight += messageHeight;
+                    maxVisibleMessages++;
+                }
+                else {
+                    break;
+                }
+            }
+            maxVisibleMessages = Math.max(TERMINAL_CONSTANTS.MIN_VISIBLE_MESSAGES, maxVisibleMessages);
+        }
+        return {
+            messageBoxMaxWidth: Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
+                TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)),
+            maxVisibleMessages: maxVisibleMessages,
+            totalMessageHeight: totalMessageHeight
+        };
+    }, [maxHeight, terminalWidth, messages]);
     // Memoized color scheme
     const colorScheme = useMemo(() => ({
         userMessage: colors?.userMessage || DEFAULT_COLORS.userMessage,
@@ -23,12 +122,15 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
         scrollIndicator: colors?.scrollIndicator || DEFAULT_COLORS.scrollIndicator,
         streamingIndicator: colors?.streamingIndicator || DEFAULT_COLORS.streamingIndicator
     }), [colors]);
-    // Auto-scroll to bottom when new messages are added
+    // Auto-scroll to bottom when messages change (including content updates)
     useEffect(() => {
         if (messages.length > dimensions.maxVisibleMessages) {
             setScrollOffset(Math.max(0, messages.length - dimensions.maxVisibleMessages));
         }
-    }, [messages.length, dimensions.maxVisibleMessages]);
+        else {
+            setScrollOffset(0);
+        }
+    }, [messages, dimensions.maxVisibleMessages, dimensions.totalMessageHeight]);
     // Scroll handler with boundary checks
     const handleScroll = useCallback((direction, amount = 1) => {
         setScrollOffset(prevOffset => {

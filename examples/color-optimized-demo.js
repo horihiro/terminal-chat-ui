@@ -20,7 +20,7 @@ const colorOptimizedHandler = async (message, helpers) => {
     
     setTimeout(() => {
       thinking.remove();
-      helpers.addMessage(`「${message}」について、\n視認性の良い色でお答えします！`, false);
+      helpers.addMessage(`「${message}」について、視認性の良い色でお答えします！`, false);
     }, 2500);
   }
 };
@@ -32,7 +32,7 @@ runTerminalChat({
   initialMessages: [
     {
       id: 'color-welcome',
-      text: '🎯 黒背景最適化デモへようこそ！',//\n\nこのチャットは黒いターミナル背景での視認性を重視した色設定になっています：\n\n📋 色設定の特徴：\n• ユーザーメッセージ: 明るい緑 (greenBright)\n• ボットメッセージ: 明るい青 (blueBright)\n• ヘッダー: 明るいシアン (cyanBright)\n• タイムスタンプ: シアン (cyan)\n• 入力ラベル: 明るい黄色 (yellowBright)\n• スクロール表示: マゼンタ (magenta)\n\n「色」や「見やすい」と入力して試してください！',
+      text: '🎯 黒背景最適化デモへようこそ！\n\nこのチャットは黒いターミナル背景での視認性を重視した色設定になっています：\n\n📋 色設定の特徴：\n• ユーザーメッセージ: 明るい緑 (greenBright)\n• ボットメッセージ: 明るい青 (blueBright)\n• ヘッダー: 明るいシアン (cyanBright)\n• タイムスタンプ: シアン (cyan)\n• 入力ラベル: 明るい黄色 (yellowBright)\n• スクロール表示: マゼンタ (magenta)\n\n「色」や「見やすい」と入力して試してください！',
       isUser: false,
       timestamp: new Date()
     }

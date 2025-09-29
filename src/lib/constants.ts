@@ -12,7 +12,7 @@ export const TERMINAL_CONSTANTS = {
   
   // Message display
   MESSAGE_PADDING: 4,
-  MESSAGE_HEIGHT_ESTIMATE: 4,
+  MESSAGE_HEIGHT_ESTIMATE: 5, // Border(2) + Content(1) + Timestamp(1) + Margin(1)
   MIN_VISIBLE_MESSAGES: 2,
   MESSAGE_BOX_PADDING: 10,
   MESSAGE_BOX_WIDTH_RATIO: 0.7,
