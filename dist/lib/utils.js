@@ -53,7 +53,7 @@ export class TextUtils {
             hour: '2-digit',
             minute: '2-digit'
         });
-        const icon = isUser ? '👤' : '🤖';
+        const icon = isUser ? TERMINAL_CONSTANTS.USER_ICON : TERMINAL_CONSTANTS.BOT_ICON;
         return `${icon} ${timeStr}`;
     }
 }

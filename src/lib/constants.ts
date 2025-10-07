@@ -31,7 +31,11 @@ export const TERMINAL_CONSTANTS = {
   DEFAULT_STREAM_DELAY: 60,
   FAST_STREAM_DELAY: 20,
   SLOW_STREAM_DELAY: 200,
-  PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2
+  PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2,
+
+  // Icons
+  USER_ICON: '👦',
+  BOT_ICON: '🤖'
 } as const;
 
 // ANSI escape sequences
@@ -53,11 +57,11 @@ export const DEFAULT_COLORS = {
   userMessageBorder: 'green',
   
   // Bot messages - bright blue for distinction
-  botMessage: 'blueBright', 
-  botMessageBorder: 'blue',
+  botMessage: 'cyanBright', 
+  botMessageBorder: 'cyan',
   
   // Timestamp - cyan for subtle accent
-  timestamp: 'cyan',
+  timestamp: 'whiteBright',
   
   // Header - bright cyan for prominence
   header: 'cyanBright',

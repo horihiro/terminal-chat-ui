@@ -20,6 +20,8 @@ export declare const TERMINAL_CONSTANTS: {
     readonly FAST_STREAM_DELAY: 20;
     readonly SLOW_STREAM_DELAY: 200;
     readonly PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2;
+    readonly USER_ICON: "👦";
+    readonly BOT_ICON: "🤖";
 };
 export declare const ANSI_CODES: {
     readonly ALTERNATE_SCREEN_ON: "\u001B[?1049h";
@@ -33,9 +35,9 @@ export declare const ANSI_CODES: {
 export declare const DEFAULT_COLORS: {
     readonly userMessage: "greenBright";
     readonly userMessageBorder: "green";
-    readonly botMessage: "blueBright";
-    readonly botMessageBorder: "blue";
-    readonly timestamp: "cyan";
+    readonly botMessage: "cyanBright";
+    readonly botMessageBorder: "cyan";
+    readonly timestamp: "whiteBright";
     readonly header: "cyanBright";
     readonly inputLabel: "yellowBright";
     readonly inputText: "white";
