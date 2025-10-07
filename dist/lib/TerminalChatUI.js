@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Box, Text, useInput, useApp, useStdout } from 'ink';
 import MessageList from '../components/MessageList.js';
 import InputBox from '../components/InputBox.js';
+import fs from 'fs';
 /**
  * Terminal Chat UI Library
  *
@@ -21,14 +22,22 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
             // Disable cursor position reports and other terminal responses
             process.stdin.setRawMode(false);
         }
+        // // Switch to alternate screen buffer
+        // process.stdout.write('\x1b[?1049h');
+        // // Clear screen
+        // process.stdout.write('\x1b[2J\x1b[H');
+        // // Hide cursor
+        // process.stdout.write('\x1b[?25l');
+        // // Disable scrolling
+        // process.stdout.write('\x1b[?7l');
         // Switch to alternate screen buffer
-        process.stdout.write('\x1b[?1049h');
+        fs.writeSync(process.stdout.fd, '\x1b[?1049h');
         // Clear screen
-        process.stdout.write('\x1b[2J\x1b[H');
+        fs.writeSync(process.stdout.fd, '\x1b[2J\x1b[H');
         // Hide cursor
-        process.stdout.write('\x1b[?25l');
+        fs.writeSync(process.stdout.fd, '\x1b[?25l');
         // Disable scrolling
-        process.stdout.write('\x1b[?7l');
+        fs.writeSync(process.stdout.fd, '\x1b[?7l');
     }, [useAlternateScreen]);
     const restoreTerminal = useCallback(() => {
         if (!useAlternateScreen)
