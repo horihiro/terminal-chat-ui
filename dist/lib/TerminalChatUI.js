@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Box, Text, useInput, useApp, useStdout } from 'ink';
+import { Box, Text, useApp, useStdout } from 'ink';
 import MessageList from '../components/MessageList.js';
 import InputBox from '../components/InputBox.js';
 import fs from 'fs';
@@ -22,14 +22,6 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
             // Disable cursor position reports and other terminal responses
             process.stdin.setRawMode(false);
         }
-        // // Switch to alternate screen buffer
-        // process.stdout.write('\x1b[?1049h');
-        // // Clear screen
-        // process.stdout.write('\x1b[2J\x1b[H');
-        // // Hide cursor
-        // process.stdout.write('\x1b[?25l');
-        // // Disable scrolling
-        // process.stdout.write('\x1b[?7l');
         // Switch to alternate screen buffer
         fs.writeSync(process.stdout.fd, '\x1b[?1049h');
         // Clear screen
@@ -68,6 +60,7 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
         // Setup cleanup function
         const cleanup = () => {
             restoreTerminal();
+            process.exit(0);
         };
         // Register cleanup for various exit events
         process.on('exit', cleanup);
@@ -123,17 +116,16 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
         // Clear input field
         setInputValue('');
     }, [onMessageSend]);
-    // Exit with Ctrl+C
-    useInput((input, key) => {
-        if (key.ctrl && input === 'c') {
-            if (onExit) {
-                onExit();
-            }
-            else {
-                exit();
-            }
-        }
-    });
+    // // Exit with Ctrl+C
+    // useInput((input, key) => {
+    //   if (key.ctrl && input === 'c') {
+    //     if (onExit) {
+    //       onExit();
+    //     } else {
+    //       exit();
+    //     }
+    //   }
+    // });
     // Calculate message area height (support dynamic size)
     const messageAreaHeight = useMemo(() => Math.max(5, terminalSize.height - 10), [terminalSize.height]);
     // Generate header text
@@ -197,4 +189,5 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
         colors: colors
     })));
 };
+process.stdin.on('end', () => console.error('stdin end event in parent'));
 export default TerminalChatUI;

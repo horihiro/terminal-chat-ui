@@ -76,6 +76,7 @@ const TerminalChatUI: React.FC<TerminalChatUIProps> = ({
     // Setup cleanup function
     const cleanup = () => {
       restoreTerminal();
+      process.exit(0);
     };
 
     // Register cleanup for various exit events
@@ -142,16 +143,16 @@ const TerminalChatUI: React.FC<TerminalChatUIProps> = ({
     setInputValue('');
   }, [onMessageSend]);
 
-  // Exit with Ctrl+C
-  useInput((input, key) => {
-    if (key.ctrl && input === 'c') {
-      if (onExit) {
-        onExit();
-      } else {
-        exit();
-      }
-    }
-  });
+  // // Exit with Ctrl+C
+  // useInput((input, key) => {
+  //   if (key.ctrl && input === 'c') {
+  //     if (onExit) {
+  //       onExit();
+  //     } else {
+  //       exit();
+  //     }
+  //   }
+  // });
 
   // Calculate message area height (support dynamic size)
   const messageAreaHeight = useMemo(() => 
@@ -228,5 +229,5 @@ const TerminalChatUI: React.FC<TerminalChatUIProps> = ({
     )
   );
 };
-
+ process.stdin.on('end', () => console.error('stdin end event in parent'));
 export default TerminalChatUI;
