@@ -3,6 +3,7 @@ import { spawn } from 'child_process';
 
 let chatProcess = null;
 let msg = null;
+let timeout = null;
 const chatConfig = {
   title: "Simple echo chat",
   placeholder: "type anything...",
@@ -25,13 +26,21 @@ const chatConfig = {
       chatProcess.stdout.on('data', (data) => {
         if (!msg) {
           msg = helpers.addStreamingMessage("", false)
-        } 
+        }
+        clearTimeout(timeout);
         if (data.toString() === '\0') {
           msg.complete();
           msg = null;
           return;
         }
         msg.append(data.toString());
+        timeout = setTimeout(() => {
+          if (msg) {
+            msg.complete();
+            msg = null;
+          }
+          timeout = null;
+        }, 1000);
       });
     }
     chatProcess.stdin.write(messageText + '\n');

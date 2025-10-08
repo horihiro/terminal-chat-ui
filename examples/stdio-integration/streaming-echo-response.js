@@ -9,5 +9,4 @@ process.stdin.on('data', async (data) => {
     process.stdout.write(c);
     return new Promise(resolve => setTimeout(resolve, 100));
   }, Promise.resolve());
-  process.stdout.write('\0');
 });
