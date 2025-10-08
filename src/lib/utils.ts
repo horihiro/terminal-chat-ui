@@ -160,21 +160,17 @@ export class MessageUtils {
                  TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)
     );
 
-    if (isStreaming) {
-      return maxWidth; // Fixed width during streaming to prevent layout shifts
-    }
-
     const textWidth = TextUtils.getTextWidth(message.text);
     
     if (message.isUser && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
       // User messages: calculate based on wrapped lines
       const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
       const maxLineWidth = Math.max(...wrappedLines.map(line => TextUtils.getTextWidth(line)));
-      return Math.min(maxWidth, maxLineWidth + 8);
+      return Math.min(maxWidth, maxLineWidth + 4);
     }
 
     // Bot messages or short text: optimal size based on content
-    return Math.min(maxWidth, textWidth + 8);
+    return Math.min(maxWidth, textWidth + 4);
   }
 }
 

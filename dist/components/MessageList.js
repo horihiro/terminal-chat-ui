@@ -213,11 +213,7 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
         flexDirection: "row"
     }, React.createElement(Text, {
         color: colorScheme.botMessage
-    }, message.text), 
-    // Streaming indicator (inline, no line break)
-    message.isStreaming && React.createElement(Text, {
-        color: colorScheme.streamingIndicator
-    }, "▌"))), 
+    }, message.text))), 
     // Timestamp with bot icon
     React.createElement(Text, {
         color: colorScheme.timestamp,

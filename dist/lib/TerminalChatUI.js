@@ -189,5 +189,4 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
         colors: colors
     })));
 };
-process.stdin.on('end', () => console.error('stdin end event in parent'));
 export default TerminalChatUI;

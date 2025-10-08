@@ -262,11 +262,6 @@ const MessageList: React.FC<MessageListProps> = ({
           React.createElement(Text, { 
             color: colorScheme.botMessage
           }, message.text),
-          
-          // Streaming indicator (inline, no line break)
-          message.isStreaming && React.createElement(Text, { 
-            color: colorScheme.streamingIndicator
-          }, "▌")
         )
       ),
       // Timestamp with bot icon
