@@ -1,4 +1,6 @@
-import { REGEX_PATTERNS, TERMINAL_CONSTANTS, ANSI_CODES } from './constants.js';
+import { TERMINAL_CONSTANTS, ANSI_CODES } from './constants.js';
+import GraphemeSplitter from 'grapheme-splitter';
+import stringWidth from 'string-width';
 /**
  * Text processing utilities with multi-byte character support
  */
@@ -9,11 +11,7 @@ export class TextUtils {
     static getTextWidth(text) {
         if (!text)
             return 0;
-        let width = 0;
-        for (const char of text) {
-            width += REGEX_PATTERNS.JAPANESE_CHARS.test(char) ? 2 : 1;
-        }
-        return width;
+        return stringWidth(text);
     }
     /**
      * Wrap text with multi-byte character support
@@ -25,20 +23,22 @@ export class TextUtils {
             maxWidth <= TERMINAL_CONSTANTS.MIN_WRAP_WIDTH) {
             return [text];
         }
+        const splitter = new GraphemeSplitter();
+        const graphemes = splitter.splitGraphemes(text); // 各グラフェム（絵文字合成含む）
         const lines = [];
         let currentLine = '';
         let currentWidth = 0;
-        for (const char of text) {
-            const charWidth = REGEX_PATTERNS.JAPANESE_CHARS.test(char) ? 2 : 1;
-            if (currentWidth + charWidth <= maxWidth) {
-                currentLine += char;
-                currentWidth += charWidth;
+        for (const g of graphemes) {
+            const gw = stringWidth(g); // 正確な表示幅
+            if (currentWidth + gw <= maxWidth) {
+                currentLine += g;
+                currentWidth += gw;
             }
             else {
                 if (currentLine)
                     lines.push(currentLine);
-                currentLine = char;
-                currentWidth = charWidth;
+                currentLine = g;
+                currentWidth = gw;
             }
         }
         if (currentLine)
@@ -131,9 +131,6 @@ export class MessageUtils {
     static calculateMessageBoxWidth(message, terminalWidth, isStreaming = false) {
         const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
             TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
-        // if (isStreaming) {
-        //   return maxWidth; // Fixed width during streaming to prevent layout shifts
-        // }
         const textWidth = TextUtils.getTextWidth(message.text);
         if (message.isUser && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
             // User messages: calculate based on wrapped lines

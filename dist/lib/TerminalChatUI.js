@@ -116,16 +116,6 @@ const TerminalChatUI = ({ messages = [], onMessageSend, title = "Terminal Chat",
         // Clear input field
         setInputValue('');
     }, [onMessageSend]);
-    // // Exit with Ctrl+C
-    // useInput((input, key) => {
-    //   if (key.ctrl && input === 'c') {
-    //     if (onExit) {
-    //       onExit();
-    //     } else {
-    //       exit();
-    //     }
-    //   }
-    // });
     // Calculate message area height (support dynamic size)
     const messageAreaHeight = useMemo(() => Math.max(5, terminalSize.height - 10), [terminalSize.height]);
     // Generate header text

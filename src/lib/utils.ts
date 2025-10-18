@@ -1,5 +1,7 @@
 import type { Message } from '../types.js';
 import { REGEX_PATTERNS, TERMINAL_CONSTANTS, ANSI_CODES } from './constants.js';
+import GraphemeSplitter from 'grapheme-splitter';
+import stringWidth from 'string-width';
 
 /**
  * Text processing utilities with multi-byte character support
@@ -10,12 +12,7 @@ export class TextUtils {
    */
   static getTextWidth(text: string): number {
     if (!text) return 0;
-    
-    let width = 0;
-    for (const char of text) {
-      width += REGEX_PATTERNS.JAPANESE_CHARS.test(char) ? 2 : 1;
-    }
-    return width;
+    return stringWidth(text);
   }
 
   /**
@@ -23,28 +20,28 @@ export class TextUtils {
    */
   static wrapText(text: string, maxWidth: number): string[] {
     if (!text) return [''];
-    if (text.length <= TERMINAL_CONSTANTS.SHORT_MESSAGE_THRESHOLD || 
-        maxWidth <= TERMINAL_CONSTANTS.MIN_WRAP_WIDTH) {
+    if (text.length <= TERMINAL_CONSTANTS.SHORT_MESSAGE_THRESHOLD ||
+      maxWidth <= TERMINAL_CONSTANTS.MIN_WRAP_WIDTH) {
       return [text];
     }
-    
+
+    const splitter = new GraphemeSplitter();
+    const graphemes = splitter.splitGraphemes(text); // 各グラフェム（絵文字合成含む）
     const lines: string[] = [];
     let currentLine = '';
     let currentWidth = 0;
-    
-    for (const char of text) {
-      const charWidth = REGEX_PATTERNS.JAPANESE_CHARS.test(char) ? 2 : 1;
-      
-      if (currentWidth + charWidth <= maxWidth) {
-        currentLine += char;
-        currentWidth += charWidth;
+
+    for (const g of graphemes) {
+      const gw = stringWidth(g); // 正確な表示幅
+      if (currentWidth + gw <= maxWidth) {
+        currentLine += g;
+        currentWidth += gw;
       } else {
         if (currentLine) lines.push(currentLine);
-        currentLine = char;
-        currentWidth = charWidth;
+        currentLine = g;
+        currentWidth = gw;
       }
     }
-    
     if (currentLine) lines.push(currentLine);
     return lines.length > 0 ? lines : [''];
   }
@@ -53,9 +50,9 @@ export class TextUtils {
    * Format timestamp with user/bot icon
    */
   static formatTimeWithIcon(timestamp: Date, isUser: boolean): string {
-    const timeStr = timestamp.toLocaleTimeString('ja-JP', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    const timeStr = timestamp.toLocaleTimeString('ja-JP', {
+      hour: '2-digit',
+      minute: '2-digit'
     });
     const icon = isUser ? TERMINAL_CONSTANTS.USER_ICON : TERMINAL_CONSTANTS.BOT_ICON;
     return `${icon} ${timeStr}`;
@@ -112,15 +109,15 @@ export class MessageUtils {
    * Create message with validation
    */
   static createMessage(
-    id: number | string, 
-    text: string, 
-    isUser: boolean = false, 
+    id: number | string,
+    text: string,
+    isUser: boolean = false,
     timestamp: Date = new Date()
   ): Message {
     if (typeof text !== 'string') {
       throw new Error('Message text must be a string');
     }
-    
+
     return {
       id,
       text: text.trim(),
@@ -133,8 +130,8 @@ export class MessageUtils {
    * Create streaming message
    */
   static createStreamingMessage(
-    id: number | string, 
-    isUser: boolean = false, 
+    id: number | string,
+    isUser: boolean = false,
     timestamp: Date = new Date()
   ): Message {
     return {
@@ -150,18 +147,18 @@ export class MessageUtils {
    * Calculate optimal message box width
    */
   static calculateMessageBoxWidth(
-    message: Message, 
-    terminalWidth: number, 
+    message: Message,
+    terminalWidth: number,
     isStreaming: boolean = false
   ): number {
     const maxWidth = Math.max(
       TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH,
-      Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) * 
-                 TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)
+      Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
+        TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)
     );
 
     const textWidth = TextUtils.getTextWidth(message.text);
-    
+
     if (message.isUser && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
       // User messages: calculate based on wrapped lines
       const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
@@ -189,11 +186,11 @@ export class ArrayUtils {
    * Update message by ID immutably
    */
   static updateMessageById(
-    messages: readonly Message[], 
-    messageId: number | string, 
+    messages: readonly Message[],
+    messageId: number | string,
     updater: (message: Message) => Message
   ): Message[] {
-    return messages.map(msg => 
+    return messages.map(msg =>
       msg.id === messageId ? updater(msg) : msg
     );
   }
@@ -202,8 +199,8 @@ export class ArrayUtils {
    * Update message text by ID
    */
   static updateMessageText(
-    messages: readonly Message[], 
-    messageId: number | string, 
+    messages: readonly Message[],
+    messageId: number | string,
     newText: string
   ): Message[] {
     return ArrayUtils.updateMessageById(messages, messageId, msg => ({
@@ -216,8 +213,8 @@ export class ArrayUtils {
    * Append text to message
    */
   static appendToMessage(
-    messages: readonly Message[], 
-    messageId: number | string, 
+    messages: readonly Message[],
+    messageId: number | string,
     appendText: string
   ): Message[] {
     return ArrayUtils.updateMessageById(messages, messageId, msg => ({
@@ -230,7 +227,7 @@ export class ArrayUtils {
    * Complete streaming message
    */
   static completeStreaming(
-    messages: readonly Message[], 
+    messages: readonly Message[],
     messageId: number | string
   ): Message[] {
     return ArrayUtils.updateMessageById(messages, messageId, msg => ({
@@ -243,7 +240,7 @@ export class ArrayUtils {
    * Remove message by ID immutably
    */
   static removeMessage(
-    messages: readonly Message[], 
+    messages: readonly Message[],
     messageId: number | string
   ): Message[] {
     return messages.filter(msg => msg.id !== messageId);
