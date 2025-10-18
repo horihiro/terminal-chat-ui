@@ -5,22 +5,25 @@ import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config({
-  path: new URL('./.env', import.meta.url)
+  path: new URL('./.env', import.meta.url),
+  quiet: true
 });
 
 // Launch the chat console application
-const chatProcess = spawn('node', [
-  'examples/stdio-integration/azure-ai-foundry-agent.js',
-  process.env.AZURE_AI_FOUNDRY_PROJECT_ENDPOINT,
-  process.env.AZURE_AI_FOUNDRY_AGENT_ID,
+const argv = process.argv[2].split(' ');
+console.log("Launching chat program by the following arguments:", argv);
+const chatProcess = spawn(argv[0], [
+  ...argv.splice(1)
 ], {
   stdio: ['pipe', 'pipe', 'pipe']
 });
 
+console.log("Waiting for completing to start chat program that integrates by stdio integration...");
 // Wait for the initial message from the chat process via stdout or stderr
 const handleChatProcessCompleted = (data) => {
   chatProcess.stdout.off('data', handleChatProcessCompleted);
   chatProcess.stderr.off('data', handleChatProcessCompleted);
+  console.log("Done.");
 
   const chatConfig = {
     title: "Simple echo chat",
