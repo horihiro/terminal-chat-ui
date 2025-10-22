@@ -1,0 +1,7 @@
+{
+  "type": "module",
+  "dependencies": {
+    "@azure/ai-agents": "^1.2.0-beta.2",
+    "@azure/identity": "^4.13.0"
+  }
+}

@@ -38,7 +38,7 @@ const main = async () => {
 
   console.log("You can start chatting with the agent now.");
 
-  const conversationLoop = async () => {
+  while(true) {
     const ask = await rl.question("");
     // send a user message to the agent
     const message = await client.messages.create(
@@ -98,9 +98,7 @@ const main = async () => {
           break;
       }
     }
-    conversationLoop();
   }
-  conversationLoop();
 };
 
 main().catch((err) => {

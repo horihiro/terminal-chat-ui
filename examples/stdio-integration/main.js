@@ -1,13 +1,19 @@
 // This script demonstrates integration a chat console UI with an external chat process using stdio.
 import { runTerminalChat, createMessage } from '../../dist/lib/index.js';
 import { spawn } from 'child_process';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import path from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
+dotenv.config({ path: `${__dirname}${path.sep}.env` });
 // Launch the chat console application
-const argv = process.argv[2].split(' ');
-console.log("Launching chat program by the following arguments:", argv);
-const chatProcess = spawn(argv[0], [
-  ...argv.splice(1)
-], {
+const args = Object.keys(process.env).filter(k => k.startsWith('CHAT_APP_ARG_')).sort().map(k => process.env[k]);
+console.log("Launching chat program by the following arguments:", args);
+const chatProcess = spawn(
+  process.env.CHAT_APP_COMMAND,
+  args, {
   stdio: ['pipe', 'pipe', 'pipe']
 });
 
