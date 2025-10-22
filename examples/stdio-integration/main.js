@@ -19,7 +19,10 @@ const chatProcess = spawn(
 
 console.log("Waiting for completing to start chat program that integrates by stdio integration...");
 // Wait for the initial message from the chat process via stdout or stderr
+let initialized = false;
 const handleChatProcessCompleted = (data) => {
+  if (initialized) return;
+  initialized = true;
   chatProcess.stdout.off('data', handleChatProcessCompleted);
   chatProcess.stderr.off('data', handleChatProcessCompleted);
   console.log("Done.");
