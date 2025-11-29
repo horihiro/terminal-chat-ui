@@ -1,4 +1,4 @@
-import type { Message } from '../types.js';
+import { Message, RoleType } from '../types.js';
 /**
  * Text processing utilities with multi-byte character support
  */
@@ -14,7 +14,7 @@ export declare class TextUtils {
     /**
      * Format timestamp with user/bot icon
      */
-    static formatTimeWithIcon(timestamp: Date, isUser: boolean): string;
+    static formatTimeWithIcon(timestamp: Date, role: RoleType): string;
 }
 /**
  * Terminal control utilities
@@ -47,11 +47,11 @@ export declare class MessageUtils {
     /**
      * Create message with validation
      */
-    static createMessage(id: number | string, text: string, isUser?: boolean, timestamp?: Date): Message;
+    static createMessage(id: number | string, text: string, role?: RoleType, timestamp?: Date): Message;
     /**
      * Create streaming message
      */
-    static createStreamingMessage(id: number | string, isUser?: boolean, timestamp?: Date): Message;
+    static createStreamingMessage(id: number | string, role?: RoleType, timestamp?: Date): Message;
     /**
      * Calculate optimal message box width
      */

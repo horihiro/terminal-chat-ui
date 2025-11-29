@@ -39,8 +39,8 @@ const chatConfig = {
   title: "外部API連携チャット",
   placeholder: "「天気」「時間」「計算」などを試してみてください...",
   initialMessages: [
-    createMessage(1, '外部API連携チャットデモへようこそ！', false),
-    createMessage(2, '実際のプロジェクトでは、ここでChatGPTやClaude等のAPIを呼び出します', false)
+    createMessage(1, '外部API連携チャットデモへようこそ！', 2),
+    createMessage(2, '実際のプロジェクトでは、ここでChatGPTやClaude等のAPIを呼び出します', 2)
   ],
   
   // カスタム色設定の例（プレースホルダー色を含む）
@@ -56,25 +56,25 @@ const chatConfig = {
   onMessageSend: async (messageText, helpers) => {
     try {
       if (messageText.includes('終了')) {
-        helpers.addMessage('チャットを終了します。ありがとうございました！', false);
+        helpers.addMessage('チャットを終了します。ありがとうございました！', 1);
         setTimeout(() => process.exit(0), 1500);
         return;
       }
 
       // API呼び出し（ローディング表示）
-      helpers.addMessage('🤔 考え中...', false);
+      helpers.addMessage('🤔 考え中...', 1);
       
       // モックAPI呼び出し
       const response = await mockAPICall(messageText);
       
       // 応答を表示
       setTimeout(() => {
-        helpers.addMessage(response, false);
+        helpers.addMessage(response, 1);
       }, 500);
       
     } catch (error) {
       console.error('API Error:', error);
-      helpers.addMessage('申し訳ありません、エラーが発生しました。', false);
+      helpers.addMessage('申し訳ありません、エラーが発生しました。', 2);
     }
   }
 };

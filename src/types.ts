@@ -2,9 +2,16 @@
 export interface Message {
   id: number | string;
   text: string;
-  isUser: boolean;
+  role: RoleType;
   timestamp: Date;
   isStreaming?: boolean;
+}
+
+// 役割タイプ列挙型
+export const enum RoleType {
+  USER,
+  BOT,
+  SYSTEM,
 }
 
 // ストリーミングメッセージ制御インターフェース
@@ -22,8 +29,8 @@ export interface MessageController {
 
 // StreamingHelperインターフェース（拡張版）
 export interface StreamingHelper {
-  addMessage: (text: string, isUser?: boolean) => MessageController;
-  addStreamingMessage: (text?: string, isUser?: boolean) => StreamingController & MessageController;
+  addMessage: (text: string, role?: RoleType) => MessageController;
+  addStreamingMessage: (text?: string, role?: RoleType) => StreamingController & MessageController;
   updateMessage: (id: string | number, text: string) => boolean;
   removeMessage: (id: string | number) => boolean;
   getMessageById: (id: string | number) => Message | undefined;

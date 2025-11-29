@@ -22,6 +22,7 @@ export declare const TERMINAL_CONSTANTS: {
     readonly PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2;
     readonly USER_ICON: "👦";
     readonly BOT_ICON: "🤖";
+    readonly SYSTEM_ICON: "⚙️";
 };
 export declare const ANSI_CODES: {
     readonly ALTERNATE_SCREEN_ON: "\u001B[?1049h";

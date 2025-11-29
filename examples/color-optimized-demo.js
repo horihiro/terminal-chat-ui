@@ -8,11 +8,11 @@ import { runTerminalChat } from '../dist/lib/index.js';
 
 const colorOptimizedHandler = async (message, helpers) => {
   if (message.toLowerCase().includes("色") || message.toLowerCase().includes("カラー")) {
-    helpers.addMessage("🎨 この色設定は黒いターミナル背景で最適化されています！", false);
+    helpers.addMessage("🎨 この色設定は黒いターミナル背景で最適化されています！", 2);
   } else if (message.toLowerCase().includes("見やすい") || message.toLowerCase().includes("視認性")) {
-    helpers.addMessage("👀 各コンポーネントの色が見やすく調整されています：\n• ユーザーメッセージ: 明るい緑\n• ボットメッセージ: 明るい青\n• ヘッダー: 明るいシアン\n• 入力欄: 明るい黄色", false);
+    helpers.addMessage("👀 各コンポーネントの色が見やすく調整されています：\n• ユーザーメッセージ: 明るい緑\n• ボットメッセージ: 明るい青\n• ヘッダー: 明るいシアン\n• 入力欄: 明るい黄色", 2);
   } else {
-    const thinking = helpers.addMessage("🤔 考え中...", false);
+    const thinking = helpers.addMessage("🤔 考え中...", 1);
     
     setTimeout(() => {
       thinking.update("💭 黒背景に映える色で回答を準備中...");
@@ -20,7 +20,7 @@ const colorOptimizedHandler = async (message, helpers) => {
     
     setTimeout(() => {
       thinking.remove();
-      helpers.addMessage(`「${message}」について、視認性の良い色でお答えします！`, false);
+      helpers.addMessage(`「${message}」について、視認性の良い色でお答えします！`, 1);
     }, 2500);
   }
 };
@@ -33,7 +33,7 @@ runTerminalChat({
     {
       id: 'color-welcome',
       text: '🎯 黒背景最適化デモへようこそ！\n\nこのチャットは黒いターミナル背景での視認性を重視した色設定になっています：\n\n📋 色設定の特徴：\n• ユーザーメッセージ: 明るい緑 (greenBright)\n• ボットメッセージ: 明るい青 (blueBright)\n• ヘッダー: 明るいシアン (cyanBright)\n• タイムスタンプ: シアン (cyan)\n• 入力ラベル: 明るい黄色 (yellowBright)\n• スクロール表示: マゼンタ (magenta)\n\n「色」や「見やすい」と入力して試してください！',
-      isUser: false,
+      role: 2,
       timestamp: new Date()
     }
   ],

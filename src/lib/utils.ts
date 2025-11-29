@@ -1,4 +1,4 @@
-import type { Message } from '../types.js';
+import { Message, RoleType } from '../types.js';
 import { REGEX_PATTERNS, TERMINAL_CONSTANTS, ANSI_CODES } from './constants.js';
 import GraphemeSplitter from 'grapheme-splitter';
 import stringWidth from 'string-width';
@@ -49,12 +49,12 @@ export class TextUtils {
   /**
    * Format timestamp with user/bot icon
    */
-  static formatTimeWithIcon(timestamp: Date, isUser: boolean): string {
+  static formatTimeWithIcon(timestamp: Date, role: RoleType): string {
     const timeStr = timestamp.toLocaleTimeString('ja-JP', {
       hour: '2-digit',
       minute: '2-digit'
     });
-    const icon = isUser ? TERMINAL_CONSTANTS.USER_ICON : TERMINAL_CONSTANTS.BOT_ICON;
+    const icon = role === RoleType.USER ? TERMINAL_CONSTANTS.USER_ICON : (role === RoleType.BOT ? TERMINAL_CONSTANTS.BOT_ICON : TERMINAL_CONSTANTS.SYSTEM_ICON);
     return `${icon} ${timeStr}`;
   }
 }
@@ -111,7 +111,7 @@ export class MessageUtils {
   static createMessage(
     id: number | string,
     text: string,
-    isUser: boolean = false,
+    role: RoleType = RoleType.USER,
     timestamp: Date = new Date()
   ): Message {
     if (typeof text !== 'string') {
@@ -121,7 +121,7 @@ export class MessageUtils {
     return {
       id,
       text: text.trim(),
-      isUser,
+      role,
       timestamp
     };
   }
@@ -131,13 +131,13 @@ export class MessageUtils {
    */
   static createStreamingMessage(
     id: number | string,
-    isUser: boolean = false,
+    role: RoleType = RoleType.BOT,
     timestamp: Date = new Date()
   ): Message {
     return {
       id,
       text: '',
-      isUser,
+      role,
       timestamp,
       isStreaming: true
     };
@@ -159,7 +159,7 @@ export class MessageUtils {
 
     const textWidth = TextUtils.getTextWidth(message.text);
 
-    if (message.isUser && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
+    if (message.role === RoleType.USER && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
       // User messages: calculate based on wrapped lines
       const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
       const maxLineWidth = Math.max(...wrappedLines.map(line => TextUtils.getTextWidth(line)));

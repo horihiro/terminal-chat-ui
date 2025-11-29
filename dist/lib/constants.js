@@ -29,7 +29,8 @@ export const TERMINAL_CONSTANTS = {
     PUNCTUATION_EXTRA_DELAY_MULTIPLIER: 2,
     // Icons
     USER_ICON: '👦',
-    BOT_ICON: '🤖'
+    BOT_ICON: '🤖',
+    SYSTEM_ICON: '⚙️',
 };
 // ANSI escape sequences
 export const ANSI_CODES = {

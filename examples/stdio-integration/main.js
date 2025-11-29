@@ -31,7 +31,7 @@ const handleChatProcessCompleted = (data) => {
     title: "Simple echo chat",
     placeholder: "type anything...",
     initialMessages: [
-      createMessage(1, data.toString(), false)
+      createMessage(1, data.toString(), 2)
     ],
     onMessageSend: (messageText, helpers) => {
       let msg = null;
@@ -39,14 +39,14 @@ const handleChatProcessCompleted = (data) => {
       let isEndsWithNewLine = false;
       // Start the chat process if not already started
       chatProcess.on('error', (err) => {
-        helpers.addMessage(`Failed to start subprocess. ${err.message}`, false);
+        helpers.addMessage(`Failed to start subprocess. ${err.message}`, 2);
       });
       chatProcess.on('exit', (code) => {
-        helpers.addMessage(`Chat process exited with code ${code}`, false);
+        helpers.addMessage(`Chat process exited with code ${code}`, 2);
       });
       const stdoutDataHandler = (data) => {
         if (!msg) {
-          msg = helpers.addStreamingMessage("", false);
+          msg = helpers.addStreamingMessage("", 1);
           isEndsWithNewLine = false;
         }
         clearTimeout(timeout);

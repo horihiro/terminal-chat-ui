@@ -34,13 +34,13 @@ export const runTerminalChat = async (chatConfig) => {
             let messageIdCounter = initialMessages.length + 1;
             const handleMessageSend = useCallback((messageText) => {
                 // Add user message
-                const userMessage = MessageUtils.createMessage(messageIdCounter++, messageText, true);
+                const userMessage = MessageUtils.createMessage(messageIdCounter++, messageText, 0 /* RoleType.USER */);
                 setMessages((prev) => ArrayUtils.addMessage(prev, userMessage));
                 if (onMessageSend) {
                     // Pass helper to callback function
                     onMessageSend(messageText, {
-                        addMessage: (text, isUser = false) => {
-                            const botMessage = MessageUtils.createMessage(messageIdCounter++, text, isUser);
+                        addMessage: (text, role = 1 /* RoleType.BOT */) => {
+                            const botMessage = MessageUtils.createMessage(messageIdCounter++, text, role);
                             setMessages((prev) => ArrayUtils.addMessage(prev, botMessage));
                             // Return MessageController
                             return {
@@ -53,9 +53,9 @@ export const runTerminalChat = async (chatConfig) => {
                                 getId: () => botMessage.id
                             };
                         },
-                        addStreamingMessage: (text = '', isUser = false) => {
+                        addStreamingMessage: (text = '', role = 1 /* RoleType.BOT */) => {
                             const streamingId = messageIdCounter++;
-                            const streamingMessage = MessageUtils.createStreamingMessage(streamingId, isUser);
+                            const streamingMessage = MessageUtils.createStreamingMessage(streamingId, role);
                             setMessages((prev) => ArrayUtils.addMessage(prev, streamingMessage));
                             return {
                                 append: (appendText) => {

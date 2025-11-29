@@ -1,5 +1,5 @@
 import React from 'react';
-import type { MessageListProps } from '../types.js';
+import { type MessageListProps } from '../types.js';
 /**
  * Scrollable message list with color customization and optimized rendering
  */

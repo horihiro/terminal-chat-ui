@@ -25,7 +25,7 @@ const messageHandler = async (message, helpers) => {
   }
 
   // "考え中"メッセージを表示
-  thinkingController = helpers.addMessage("🤔 考え中...", false);
+  thinkingController = helpers.addMessage("🤔 考え中...", 1);
   
   // 1秒後に"考え中"メッセージを更新
   setTimeout(() => {
@@ -59,7 +59,7 @@ const messageHandler = async (message, helpers) => {
     
     const randomResponse = responses[Math.floor(Math.random() * responses.length)];
     if (message.toLowerCase().includes("ストリーミング")) {
-      const streaming = helpers.addStreamingMessage("", false);
+      const streaming = helpers.addStreamingMessage("", 1);
       await randomResponse.split('').reduce(async (promise, char) => {
         await promise;
         streaming.append(char);
@@ -67,7 +67,7 @@ const messageHandler = async (message, helpers) => {
       }, Promise.resolve());
       streaming.complete();
     } else {
-      helpers.addMessage(randomResponse, false);
+      helpers.addMessage(randomResponse, 1);
     }
   }, 3000);
 };
@@ -76,15 +76,15 @@ const messageHandler = async (message, helpers) => {
 const demoHandler = async (message, helpers) => {
   if (message.toLowerCase().includes("削除")) {
     // 削除デモ
-    const tempMsg = helpers.addMessage("このメッセージは3秒後に削除されます。", false);
+    const tempMsg = helpers.addMessage("このメッセージは3秒後に削除されます。", 1);
     setTimeout(() => {
       tempMsg.remove();
-      helpers.addMessage("メッセージが削除されました！", false);
+      helpers.addMessage("メッセージが削除されました！", 1);
     }, 3000);
     
   } else if (message.toLowerCase().includes("更新")) {
     // 更新デモ
-    const updateMsg = helpers.addMessage("このメッセージは更新されます...", false);
+    const updateMsg = helpers.addMessage("このメッセージは更新されます...", 1);
     setTimeout(() => {
       updateMsg.update("メッセージが更新されました！✨");
     }, 2000);
@@ -103,7 +103,7 @@ runTerminalChat({
     {
       id: 'welcome',
       text: 'プログラム的メッセージ操作のデモです！\n\n使用例:\n- 通常メッセージ → "考え中"状態のデモ\n- "削除"を含む → メッセージ削除のデモ\n- "更新"を含む → メッセージ更新のデモ\n- "ストリーミング"を含む → ストリーミング + 操作のデモ',
-      isUser: false,
+      role: 2,
       timestamp: new Date()
     }
   ],

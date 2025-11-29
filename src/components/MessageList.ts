@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Box, Text, useInput, type Key } from 'ink';
-import type { MessageListProps, Message } from '../types.js';
+import { type MessageListProps, type Message, RoleType } from '../types.js';
 import { TextUtils, MessageUtils } from '../lib/utils.js';
 import { TERMINAL_CONSTANTS, DEFAULT_COLORS } from '../lib/constants.js';
 
@@ -27,7 +27,7 @@ const MessageList: React.FC<MessageListProps> = ({
                    TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)
       );
       
-      if (message.isUser) {
+      if (message.role === RoleType.USER) {
         // User messages: calculate wrapped lines
         const textWidth = TextUtils.getTextWidth(message.text);
         if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
@@ -85,7 +85,7 @@ const MessageList: React.FC<MessageListProps> = ({
                      TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO)
         );
         
-        if (message.isUser) {
+        if (message.role === RoleType.USER) {
           const textWidth = TextUtils.getTextWidth(message.text);
           if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
             const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
@@ -198,7 +198,7 @@ const MessageList: React.FC<MessageListProps> = ({
     );
 
     // Calculate wrapped lines for user messages
-    const userLines = message.isUser && TextUtils.getTextWidth(message.text) > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD
+    const userLines = message.role === RoleType.USER && TextUtils.getTextWidth(message.text) > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD
       ? TextUtils.wrapText(message.text, dimensions.messageBoxMaxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING)
       : [message.text];
 
@@ -209,9 +209,11 @@ const MessageList: React.FC<MessageListProps> = ({
       width: terminalWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING,
       flexDirection: "column"
     },
-      message.isUser 
+      message.role === RoleType.USER 
         ? renderUserMessage(message, boxWidth, userLines)
-        : renderBotMessage(message, boxWidth)
+        : message.role === RoleType.BOT
+          ? renderBotMessage(message, boxWidth)
+          : renderSystemMessage(message, boxWidth)
     );
   }, [terminalWidth, dimensions.messageBoxMaxWidth, colorScheme]);
 
@@ -240,7 +242,7 @@ const MessageList: React.FC<MessageListProps> = ({
       React.createElement(Text, { 
         color: colorScheme.timestamp,
         dimColor: true
-      }, TextUtils.formatTimeWithIcon(message.timestamp, true))
+      }, TextUtils.formatTimeWithIcon(message.timestamp, RoleType.USER))
     ), [colorScheme]);
 
   // Render bot message
@@ -268,7 +270,35 @@ const MessageList: React.FC<MessageListProps> = ({
       React.createElement(Text, { 
         color: colorScheme.timestamp,
         dimColor: true
-      }, TextUtils.formatTimeWithIcon(message.timestamp, false))
+      }, TextUtils.formatTimeWithIcon(message.timestamp, RoleType.BOT))
+    ), [colorScheme]);
+
+  // Render bot message
+  const renderSystemMessage = useCallback((message: Message, boxWidth: number) => 
+    React.createElement(Box, { 
+      flexDirection: "column", 
+      alignItems: "flex-start"
+    },
+      React.createElement(Box, {
+        borderStyle: "single", 
+        borderColor: colorScheme.botMessageBorder,
+        width: boxWidth,
+        flexDirection: "column",
+        paddingX: 1
+      },
+        React.createElement(Box, {
+          flexDirection: "row"
+        },
+          React.createElement(Text, { 
+            color: colorScheme.botMessage
+          }, message.text),
+        )
+      ),
+      // Timestamp with bot icon
+      React.createElement(Text, { 
+        color: colorScheme.timestamp,
+        dimColor: true
+      }, TextUtils.formatTimeWithIcon(message.timestamp, RoleType.SYSTEM))
     ), [colorScheme]);
 
   const { visibleMessages, hasMoreAbove, hasMoreBelow } = displayData;

@@ -16,6 +16,7 @@ export {
   REGEX_PATTERNS
 } from './constants.js';
 
+import { RoleType } from '../types.js';
 // Import utilities for internal use
 import { TextUtils, TerminalUtils, MessageUtils, ArrayUtils } from './utils.js';
 
@@ -79,14 +80,14 @@ export const runTerminalChat = async (chatConfig: import('../types.js').ChatConf
 
       const handleMessageSend = useCallback((messageText: string) => {
           // Add user message
-          const userMessage = MessageUtils.createMessage(messageIdCounter++, messageText, true);
+          const userMessage = MessageUtils.createMessage(messageIdCounter++, messageText, RoleType.USER);
           setMessages((prev: import('../types.js').Message[]) => ArrayUtils.addMessage(prev, userMessage));
 
           if (onMessageSend) {
             // Pass helper to callback function
             onMessageSend(messageText, {
-              addMessage: (text: string, isUser = false) => {
-                const botMessage = MessageUtils.createMessage(messageIdCounter++, text, isUser);
+              addMessage: (text: string, role: RoleType = RoleType.BOT) => {
+                const botMessage = MessageUtils.createMessage(messageIdCounter++, text, role);
                 setMessages((prev: import('../types.js').Message[]) => ArrayUtils.addMessage(prev, botMessage));
                 
                 // Return MessageController
@@ -102,9 +103,9 @@ export const runTerminalChat = async (chatConfig: import('../types.js').ChatConf
                   getId: () => botMessage.id
                 };
               },
-              addStreamingMessage: (text = '', isUser = false) => {
+              addStreamingMessage: (text = '', role: RoleType = RoleType.BOT) => {
                 const streamingId = messageIdCounter++;
-                const streamingMessage = MessageUtils.createStreamingMessage(streamingId, isUser);
+                const streamingMessage = MessageUtils.createStreamingMessage(streamingId, role);
                 setMessages((prev: import('../types.js').Message[]) => ArrayUtils.addMessage(prev, streamingMessage));
 
                 return {

@@ -35,7 +35,8 @@ export const TERMINAL_CONSTANTS = {
 
   // Icons
   USER_ICON: '👦',
-  BOT_ICON: '🤖'
+  BOT_ICON: '🤖',
+  SYSTEM_ICON: '⚙️',
 } as const;
 
 // ANSI escape sequences

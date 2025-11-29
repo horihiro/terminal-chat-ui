@@ -14,7 +14,7 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
             let messageHeight = 0;
             const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
                 TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
-            if (message.isUser) {
+            if (message.role === 0 /* RoleType.USER */) {
                 // User messages: calculate wrapped lines
                 const textWidth = TextUtils.getTextWidth(message.text);
                 if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
@@ -64,7 +64,7 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
                 let messageHeight = 0;
                 const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
                     TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
-                if (message.isUser) {
+                if (message.role === 0 /* RoleType.USER */) {
                     const textWidth = TextUtils.getTextWidth(message.text);
                     if (textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
                         const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
@@ -165,7 +165,7 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
     const renderMessage = useCallback((message) => {
         const boxWidth = MessageUtils.calculateMessageBoxWidth(message, terminalWidth, Boolean(message.isStreaming));
         // Calculate wrapped lines for user messages
-        const userLines = message.isUser && TextUtils.getTextWidth(message.text) > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD
+        const userLines = message.role === 0 /* RoleType.USER */ && TextUtils.getTextWidth(message.text) > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD
             ? TextUtils.wrapText(message.text, dimensions.messageBoxMaxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING)
             : [message.text];
         return React.createElement(Box, {
@@ -174,9 +174,11 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
             flexShrink: 0,
             width: terminalWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING,
             flexDirection: "column"
-        }, message.isUser
+        }, message.role === 0 /* RoleType.USER */
             ? renderUserMessage(message, boxWidth, userLines)
-            : renderBotMessage(message, boxWidth));
+            : message.role === 1 /* RoleType.BOT */
+                ? renderBotMessage(message, boxWidth)
+                : renderSystemMessage(message, boxWidth));
     }, [terminalWidth, dimensions.messageBoxMaxWidth, colorScheme]);
     // Render user message
     const renderUserMessage = useCallback((message, boxWidth, lines) => React.createElement(Box, {
@@ -198,7 +200,7 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
     React.createElement(Text, {
         color: colorScheme.timestamp,
         dimColor: true
-    }, TextUtils.formatTimeWithIcon(message.timestamp, true))), [colorScheme]);
+    }, TextUtils.formatTimeWithIcon(message.timestamp, 0 /* RoleType.USER */))), [colorScheme]);
     // Render bot message
     const renderBotMessage = useCallback((message, boxWidth) => React.createElement(Box, {
         flexDirection: "column",
@@ -218,7 +220,27 @@ const MessageList = ({ messages, maxHeight, terminalWidth, colors }) => {
     React.createElement(Text, {
         color: colorScheme.timestamp,
         dimColor: true
-    }, TextUtils.formatTimeWithIcon(message.timestamp, false))), [colorScheme]);
+    }, TextUtils.formatTimeWithIcon(message.timestamp, 1 /* RoleType.BOT */))), [colorScheme]);
+    // Render bot message
+    const renderSystemMessage = useCallback((message, boxWidth) => React.createElement(Box, {
+        flexDirection: "column",
+        alignItems: "flex-start"
+    }, React.createElement(Box, {
+        borderStyle: "single",
+        borderColor: colorScheme.botMessageBorder,
+        width: boxWidth,
+        flexDirection: "column",
+        paddingX: 1
+    }, React.createElement(Box, {
+        flexDirection: "row"
+    }, React.createElement(Text, {
+        color: colorScheme.botMessage
+    }, message.text))), 
+    // Timestamp with bot icon
+    React.createElement(Text, {
+        color: colorScheme.timestamp,
+        dimColor: true
+    }, TextUtils.formatTimeWithIcon(message.timestamp, 2 /* RoleType.SYSTEM */))), [colorScheme]);
     const { visibleMessages, hasMoreAbove, hasMoreBelow } = displayData;
     return React.createElement(Box, {
         flexDirection: "column",

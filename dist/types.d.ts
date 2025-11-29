@@ -1,9 +1,14 @@
 export interface Message {
     id: number | string;
     text: string;
-    isUser: boolean;
+    role: RoleType;
     timestamp: Date;
     isStreaming?: boolean;
+}
+export declare const enum RoleType {
+    USER = 0,
+    BOT = 1,
+    SYSTEM = 2
 }
 export interface StreamingController {
     append: (text: string) => void;
@@ -15,8 +20,8 @@ export interface MessageController {
     getId: () => string | number;
 }
 export interface StreamingHelper {
-    addMessage: (text: string, isUser?: boolean) => MessageController;
-    addStreamingMessage: (text?: string, isUser?: boolean) => StreamingController & MessageController;
+    addMessage: (text: string, role?: RoleType) => MessageController;
+    addStreamingMessage: (text?: string, role?: RoleType) => StreamingController & MessageController;
     updateMessage: (id: string | number, text: string) => boolean;
     removeMessage: (id: string | number) => boolean;
     getMessageById: (id: string | number) => Message | undefined;

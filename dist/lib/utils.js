@@ -48,12 +48,12 @@ export class TextUtils {
     /**
      * Format timestamp with user/bot icon
      */
-    static formatTimeWithIcon(timestamp, isUser) {
+    static formatTimeWithIcon(timestamp, role) {
         const timeStr = timestamp.toLocaleTimeString('ja-JP', {
             hour: '2-digit',
             minute: '2-digit'
         });
-        const icon = isUser ? TERMINAL_CONSTANTS.USER_ICON : TERMINAL_CONSTANTS.BOT_ICON;
+        const icon = role === 0 /* RoleType.USER */ ? TERMINAL_CONSTANTS.USER_ICON : (role === 1 /* RoleType.BOT */ ? TERMINAL_CONSTANTS.BOT_ICON : TERMINAL_CONSTANTS.SYSTEM_ICON);
         return `${icon} ${timeStr}`;
     }
 }
@@ -102,25 +102,25 @@ export class MessageUtils {
     /**
      * Create message with validation
      */
-    static createMessage(id, text, isUser = false, timestamp = new Date()) {
+    static createMessage(id, text, role = 0 /* RoleType.USER */, timestamp = new Date()) {
         if (typeof text !== 'string') {
             throw new Error('Message text must be a string');
         }
         return {
             id,
             text: text.trim(),
-            isUser,
+            role,
             timestamp
         };
     }
     /**
      * Create streaming message
      */
-    static createStreamingMessage(id, isUser = false, timestamp = new Date()) {
+    static createStreamingMessage(id, role = 1 /* RoleType.BOT */, timestamp = new Date()) {
         return {
             id,
             text: '',
-            isUser,
+            role,
             timestamp,
             isStreaming: true
         };
@@ -132,7 +132,7 @@ export class MessageUtils {
         const maxWidth = Math.max(TERMINAL_CONSTANTS.MIN_MESSAGE_BOX_WIDTH, Math.floor((terminalWidth - TERMINAL_CONSTANTS.MESSAGE_BOX_PADDING) *
             TERMINAL_CONSTANTS.MESSAGE_BOX_WIDTH_RATIO));
         const textWidth = TextUtils.getTextWidth(message.text);
-        if (message.isUser && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
+        if (message.role === 0 /* RoleType.USER */ && textWidth > TERMINAL_CONSTANTS.SHORT_TEXT_THRESHOLD) {
             // User messages: calculate based on wrapped lines
             const wrappedLines = TextUtils.wrapText(message.text, maxWidth - TERMINAL_CONSTANTS.MESSAGE_PADDING);
             const maxLineWidth = Math.max(...wrappedLines.map(line => TextUtils.getTextWidth(line)));
